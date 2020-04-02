@@ -1,9 +1,9 @@
-﻿using RestSharp;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
+using System.Collections.Generic;
+using RestSharp;
 using Newtonsoft.Json;
-using System;
-using System.Globalization;
+using Newtonsoft.Json.Linq;
 
 namespace WizDevAPITest.API
 {
@@ -14,8 +14,8 @@ namespace WizDevAPITest.API
 
         public override IRestResponse GET(string text)
         {
-            _request = "https://translate.google.com/translate_a/single?client=webapp&sl=ru&tl=en&hl=ru&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&otf=1&ssel=0&tsel=0&xid=1791807&kc=7&tk=664348.826282"
-                + "&q=" +  text.ToLower();
+            _request = "https://translate.google.com/translate_a/single?client=webapp&sl=ru&tl=en&hl=ru&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&otf=1&pc=1&ssel=6&tsel=3&xid=1791807&kc=2&tk=211474.361133"
+                + "&q=" +  text;
             string t = Uri.EscapeUriString(_request);
             _response = _client.Get(new RestRequest(t));
             
@@ -35,14 +35,15 @@ namespace WizDevAPITest.API
                     case ContentKind.MajourTranslation:
                         return _rawJson[0][0][0];
                     case ContentKind.AllTranslations:
-                        dynamic[] translations = _rawJson[5][0][2];
-                        return from t in translations
-                               select t[0];
+                        JArray array = _rawJson[1][0][1];
+                        return array.Select(t => (string)t).ToList();
+
+                        //return temp;
                     default:
                         return null;
                 }
             }
-            return null;
+            return new List<string>();
         }
     }
 }
