@@ -7,16 +7,12 @@ using OpenQA.Selenium.Remote;
 
 namespace WizDevUITest.Pages
 {
-    public class GoogleTranslatePage
+    public class GoogleTranslatePage : MainPage
     {
-        const string BASE_URL = "https://translate.google.com";
-        IWebDriver _driver;
+        const string TRANSLATOR_LABEL_XPATH = "//span[text()='Переводчик']";
+        const string TRANSLATED_TEXT_XPATH = "//span[contains(@class, 'translation')]/span";
 
-        public GoogleTranslatePage(IWebDriver driver)
-        {
-            _driver = driver;
-            _driver.Url = BASE_URL;
-        }
+        public GoogleTranslatePage(Browsers browser) : base(browser) { }
 
         public void SendText(string text)
         {
@@ -31,12 +27,12 @@ namespace WizDevUITest.Pages
 
         public string GetTranslation()
         {
-            return _driver.FindElement(By.XPath("//span[contains(@class, 'translation')]/span")).Text;
+            return _driver.FindElement(By.XPath(TRANSLATED_TEXT_XPATH)).Text;
         }
 
-        public void ClosePage()
+        public override bool Exists()
         {
-            _driver.Close();
+            return _driver.FindElements(By.XPath(TRANSLATOR_LABEL_XPATH)).Count > 1;
         }
     }
 }

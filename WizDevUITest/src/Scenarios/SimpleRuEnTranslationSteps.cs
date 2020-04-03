@@ -18,11 +18,16 @@ namespace WizDevUITest.Scenarios
     {
         GoogleTranslatePage gt;
 
+        [Before]
+        public void OpenBrowser()
+        {
+            gt = new GoogleTranslatePage(Browsers.Chrome);
+        }
+
         [Given(@"I have opened google translate in browser")]
         public void GivenIHaveOpenedGoogleTranslateInBrowser()
-        {            
-            string projDir = Directory.GetParent(Environment.CurrentDirectory).FullName;
-            gt = new GoogleTranslatePage(new ChromeDriver(projDir + "/drivers"));
+        {
+            WebPage.GoHome();
         }
 
         [When(@"I have entered (.*) into left side")]
@@ -47,7 +52,7 @@ namespace WizDevUITest.Scenarios
         [After]
         public void Close()
         {
-            gt.ClosePage();
+            //gt.ClosePage();
         }
     }
 }
